@@ -8,7 +8,7 @@ Adalah sebuah library NLP berbahasa Indonesia.
 
 Silakan baca `example.py` untuk penggunaannya.
 
-Dikarenakan library ini hanya jalan di python, maka dibikin pula API via grpc. Silakan jalankan `grpc_server.py` dan baca `example_grpc.py` untuk penggunaannya via grpc.
+Dikarenakan library ini hanya jalan di python, maka dibikin pula API via grpc agar bisa dijalankan di platform selain python. Silakan jalankan `grpc_server.py` dan baca `example_grpc.py` untuk penggunaannya via grpc.
 
 ## Dev
 
