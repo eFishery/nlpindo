@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package deployer;
+
+service NLPIndo {
+  rpc Stem (String) returns (String) {}
+  rpc Tokenize (String) returns (String) {}
+  rpc WordCount (String) returns (String) {}
+}
+
+message String {
+    string string = 1;
+}
