@@ -2,17 +2,26 @@ import copy
 from .resource.dictionary import dictionary
 
 class Stemmer:
-    def is_basic_word(self, word):
-        iskatadasar = False
-        if word.startswith('anti'):
-            tmp = word[4:]
-            iskatadasar = tmp in dictionary
-        elif word.startswith('tidak') or word.startswith('antar'):
-            tmp = word[5:]
-            iskatadasar = tmp in dictionary
+    def __init__(self):
+        self.added_basic_words = []
+        self.removed_basic_words = []
+
+    def add_basic_words(self, words):
+        if type(words) == list:
+            self.added_basic_words.extend(words)
         else:
-            iskatadasar = word in dictionary
-        return iskatadasar
+            self.added_basic_words.append(words)
+
+    def remove_basic_words(self, words):
+        if type(words) == list:
+            self.removed_basic_words.extend(words)
+        else:
+            self.removed_basic_words.append(words)
+
+    def is_basic_word(self, word):
+        if word in self.removed_basic_words:
+            return False
+        return word in dictionary or word in self.added_basic_words
 
     def process_word(self, word):
         word = word.lower()
@@ -93,7 +102,7 @@ class Stemmer:
         #     print(' ', my_word, my_confix)
 
         # print('oov', queue[-1])
-        return queue[-1]
+        return queue[0]
 
     def append_queue(self, queue, new_word, old_confix, is_true, spec={}):
         new_confix = copy.deepcopy(old_confix)
@@ -182,10 +191,6 @@ class Stemmer:
                     return new_word_ny
 
             elif old_word.startswith('meng'):
-                new_word = old_word[4:]
-                if self.append_queue(queue, new_word, old_confix, is_first_prefix, spec):
-                    return new_word
-
                 new_word_k = 'k' + old_word[4:]
                 if self.append_queue(queue, new_word_k, old_confix, is_first_prefix, spec):
                     return new_word_k
@@ -194,11 +199,11 @@ class Stemmer:
                 if self.append_queue(queue, new_word_ng, old_confix, is_first_prefix, spec):
                     return new_word_ng
 
-            elif old_word.startswith('mem'):
-                new_word = old_word[3:]
+                new_word = old_word[4:]
                 if self.append_queue(queue, new_word, old_confix, is_first_prefix, spec):
                     return new_word
 
+            elif old_word.startswith('mem'):
                 new_word_p = 'p' + old_word[3:]
                 if self.append_queue(queue, new_word_p, old_confix, is_first_prefix, spec):
                     return new_word_p
@@ -207,11 +212,11 @@ class Stemmer:
                 if self.append_queue(queue, new_word_m, old_confix, is_first_prefix, spec):
                     return new_word_m
 
-            elif old_word.startswith('men'):
                 new_word = old_word[3:]
                 if self.append_queue(queue, new_word, old_confix, is_first_prefix, spec):
                     return new_word
 
+            elif old_word.startswith('men'):
                 new_word_t = 't' + old_word[3:]
                 if self.append_queue(queue, new_word_t, old_confix, is_first_prefix, spec):
                     return new_word_t
@@ -219,6 +224,10 @@ class Stemmer:
                 new_word_n = old_word[2:]
                 if self.append_queue(queue, new_word_n, old_confix, is_first_prefix, spec):
                     return new_word_n
+
+                new_word = old_word[3:]
+                if self.append_queue(queue, new_word, old_confix, is_first_prefix, spec):
+                    return new_word
 
             if old_word.startswith(morpheme):
                 new_word = old_word[len(morpheme):]
@@ -290,10 +299,6 @@ class Stemmer:
                     return new_word_ny
 
             elif old_word.startswith('peng'):
-                new_word = old_word[4:]
-                if self.append_queue(queue, new_word, old_confix, is_first_prefix, spec):
-                    return new_word
-
                 new_word_k = 'k' + old_word[4:]
                 if self.append_queue(queue, new_word_k, old_confix, is_first_prefix, spec):
                     return new_word_k
@@ -302,11 +307,11 @@ class Stemmer:
                 if self.append_queue(queue, new_word_ng, old_confix, is_first_prefix, spec):
                     return new_word_ng
 
-            elif old_word.startswith('pem'):
-                new_word = old_word[3:]
+                new_word = old_word[4:]
                 if self.append_queue(queue, new_word, old_confix, is_first_prefix, spec):
                     return new_word
 
+            elif old_word.startswith('pem'):
                 new_word_p = 'p' + old_word[3:]
                 if self.append_queue(queue, new_word_p, old_confix, is_first_prefix, spec):
                     return new_word_p
@@ -315,11 +320,11 @@ class Stemmer:
                 if self.append_queue(queue, new_word_m, old_confix, is_first_prefix, spec):
                     return new_word_m
 
-            elif old_word.startswith('pen'):
                 new_word = old_word[3:]
                 if self.append_queue(queue, new_word, old_confix, is_first_prefix, spec):
                     return new_word
 
+            elif old_word.startswith('pen'):
                 new_word_t = 't' + old_word[3:]
                 if self.append_queue(queue, new_word_t, old_confix, is_first_prefix, spec):
                     return new_word_t
@@ -327,6 +332,10 @@ class Stemmer:
                 new_word_n = old_word[2:]
                 if self.append_queue(queue, new_word_n, old_confix, is_first_prefix, spec):
                     return new_word_n
+
+                new_word = old_word[3:]
+                if self.append_queue(queue, new_word, old_confix, is_first_prefix, spec):
+                    return new_word
 
             if old_word.startswith(morpheme):
                 new_word = old_word[len(morpheme):]

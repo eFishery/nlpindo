@@ -1,10 +1,5 @@
 dictionary = set([
 
-# user dictionary:
-'feeder',
-'koko',
-
-# kbbi dictionary:
 'ab',
 'aba',
 'aba-aba',
