@@ -22,7 +22,23 @@ class Worder:
         else:
             self.removed_stopwords.append(stopwords)
 
-    def tokenize(self, text):
+    def get_all_stopwords(self):
+        all_stopwords = []
+        for word in stopwords:
+            if word not in self.removed_stopwords:
+                all_stopwords.append(word)
+        for word in self.added_stopwords:
+            if word not in self.removed_stopwords:
+                all_stopwords.append(word)
+        return all_stopwords
+
+    def is_stopword(self, word):
+        if word not in self.removed_stopwords:
+            if word in stopwords or word in self.added_stopwords:
+                return True
+        return False
+
+    def tokenize(self, text, include_symbols=False):
         spaceds = text.split()
         re_separator = re.compile(r'([^a-zA-Z0-9])')
 
@@ -35,9 +51,26 @@ class Worder:
         for separated in separateds:
             separated = separated.strip()
             if separated:
-                tokens.append(separated)
+                if include_symbols:
+                    tokens.append(separated)
+                else:
+                    if re.match(r'[a-zA-Z]', separated):
+                        tokens.append(separated)
 
         return tokens
+
+    def stem(self, text, remove_stopwords=True):
+        tokens = self.tokenize(text)
+        words = []
+        for word in tokens:
+            word = word.lower()
+            if remove_stopwords and self.is_stopword(word):
+                continue
+            word = self.stemmer.stem(word)
+            if remove_stopwords and self.is_stopword(word):
+                continue
+            words.append(word)
+        return words
 
     def word_count(self, text, remove_stopwords=True):
         word_count = {}
@@ -47,9 +80,6 @@ class Worder:
             word = word.lower()
 
             if remove_stopwords and self.is_stopword(word):
-                continue
-
-            if not re.match(r'[a-z]', word):
                 continue
 
             word = self.stemmer.stem(word)
@@ -62,9 +92,3 @@ class Worder:
             word_count[word] += 1
 
         return word_count
-
-    def is_stopword(self, word):
-        if word not in self.removed_stopwords:
-            if word in stopwords or word in self.added_stopwords:
-                return True
-        return False
