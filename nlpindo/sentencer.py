@@ -19,7 +19,9 @@ class Sentencer:
                     if word in acuan:
                         score += 1
 
-                scores[idx] += score / (len(acuan) + len(korban))
+                dividen = len(acuan) + len(korban)
+                if dividen > 0:
+                    scores[idx] += score / dividen
 
         result = []
         for idx in range(len(sentences)):
