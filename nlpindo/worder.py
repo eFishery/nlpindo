@@ -6,37 +6,21 @@ from .resource.stopwords import stopwords
 
 class Worder:
     def __init__(self):
-        self.added_stopwords = []
-        self.removed_stopwords = []
+        self.stopwords = stopwords
         self.stemmer = Stemmer()
 
-    def add_stopwords(self, stopwords):
-        if type(stopwords) == list:
-            self.added_stopwords.extend(stopwords)
-        else:
-            self.added_stopwords.append(stopwords)
+    def add_stopwords(self, words):
+        if type(words) is not set:
+            words = set(words)
+        self.stopwords = self.stopwords.union(words)
 
-    def remove_stopwords(self, stopwords):
-        if type(stopwords) == list:
-            self.removed_stopwords.extend(stopwords)
-        else:
-            self.removed_stopwords.append(stopwords)
-
-    def get_all_stopwords(self):
-        all_stopwords = []
-        for word in stopwords:
-            if word not in self.removed_stopwords:
-                all_stopwords.append(word)
-        for word in self.added_stopwords:
-            if word not in self.removed_stopwords:
-                all_stopwords.append(word)
-        return all_stopwords
+    def remove_stopwords(self, words):
+        if type(words) is not set:
+            words = set(words)
+        self.stopwords = self.stopwords - words
 
     def is_stopword(self, word):
-        if word not in self.removed_stopwords:
-            if word in stopwords or word in self.added_stopwords:
-                return True
-        return False
+        return word in self.stopwords
 
     def tokenize(self, text, include_symbols=False):
         spaceds = text.split()

@@ -3,25 +3,20 @@ from .resource.dictionary import dictionary
 
 class Stemmer:
     def __init__(self):
-        self.added_basic_words = []
-        self.removed_basic_words = []
+        self.dictionary = dictionary
 
-    def add_basic_words(self, words):
-        if type(words) == list:
-            self.added_basic_words.extend(words)
-        else:
-            self.added_basic_words.append(words)
+    def add_dictionary(self, words):
+        if type(words) is not set:
+            words = set(words)
+        self.dictionary = self.dictionary.union(words)
 
-    def remove_basic_words(self, words):
-        if type(words) == list:
-            self.removed_basic_words.extend(words)
-        else:
-            self.removed_basic_words.append(words)
+    def remove_dictionary(self, words):
+        if type(words) is not set:
+            words = set(words)
+        self.dictionary = self.dictionary - words
 
     def is_basic_word(self, word):
-        if word in self.removed_basic_words:
-            return False
-        return word in dictionary or word in self.added_basic_words
+        return word in self.dictionary
 
     def process_word(self, word):
         word = word.lower()
